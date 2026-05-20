@@ -1,0 +1,37 @@
+Command: npm test
+
+FROM nginx
+
+COPY favicon.ico /usr/share/nginx/html/favicon.ico
+COPY index.html /usr/share/nginx/html/index.html
+COPY script.js /usr/share/nginx/html/script.js
+COPY style.css /usr/share/nginx/html/style.css
+COPY taxCalculator.js /usr/share/nginx/html/taxCalculator.js
+
+//Task 3: Build Docker image
+
+docker build -t tax-calculator .
+
+// Task 4: Run Docker container locally
+
+docker run -d -p 8080:80 --name tax-calculator tax-calculator
+
+// Task 5: Tag and push to IBM Cloud Container Registry
+
+ibmcloud login --sso
+ibmcloud cr login
+
+docker tag tax-calculator us.icr.io/SthokoPro/tax-calculator:latest
+
+docker push us.icr.io/SthokoPro/tax-calculator:latest
+
+// Task 6: Deploy Tax Calculator on IBM Cloud
+
+ibmcloud ce project select --name Final_Project
+
+ibmcloud ce application create \
+  --name tax-calculator \
+  --image us.icr.io/Final_Project/tax-calculator:latest \
+  --port 80
+
+
